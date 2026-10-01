@@ -38,32 +38,56 @@ export function Faixa() {
 }
 
 /* ───────────── Vitrine com scroll 3D ───────────── */
+const vitrineTitulo = (
+  <>
+    <p className="mb-4 text-sm tracking-[0.2em] text-muted uppercase">Isto não é um template</p>
+    <h2 className="font-wide text-4xl leading-[0.95] font-extrabold md:text-7xl">
+      Nove páginas, <br />
+      <span className="serif-accent font-normal text-cyan">uma marca inteira.</span>
+    </h2>
+  </>
+)
+
 export function Vitrine() {
   return (
     <section className="overflow-hidden">
-      <ContainerScroll
-        titleComponent={
-          <>
-            <p className="mb-4 text-sm tracking-[0.2em] text-muted uppercase">Isto não é um template</p>
-            <h2 className="font-wide text-4xl leading-[0.95] font-extrabold md:text-7xl">
-              Nove páginas, <br />
-              <span className="serif-accent font-normal text-cyan">uma marca inteira.</span>
-            </h2>
-            <p className="mx-auto mt-6 mb-16 max-w-xl text-muted">
-              O site da Elbratec EcoCharge foi pensado do catálogo ao cadastro de revendedor — role para ver.
-            </p>
-          </>
-        }
-      >
-        <div className="h-full w-full overflow-hidden">
+      {/* Celular: versão leve, sem a animação 3D (que ocupa muita rolagem em tela pequena) */}
+      <div className="px-4 pt-4 pb-16 md:hidden">
+        <div className="text-center">{vitrineTitulo}</div>
+        <p className="mx-auto mt-4 max-w-sm text-center text-foreground/75">
+          O site da Elbratec EcoCharge foi pensado do catálogo ao cadastro de revendedor.
+        </p>
+        <div className="mt-8 rounded-[22px] border-4 border-[#2a2f35] bg-[#15181c] p-1.5 shadow-[0_30px_60px_-20px_rgba(0,0,0,0.9)]">
           <img
             src="portfolio/27-ecocharge-home.webp"
             alt="Página inicial do site Elbratec EcoCharge"
-            className="h-full w-full object-cover object-left-top"
+            className="aspect-[4/3] w-full rounded-2xl object-cover object-left-top"
             loading="lazy"
           />
         </div>
-      </ContainerScroll>
+      </div>
+
+      <div className="hidden md:block">
+        <ContainerScroll
+          titleComponent={
+            <>
+              {vitrineTitulo}
+              <p className="mx-auto mt-6 mb-16 max-w-xl text-muted">
+                O site da Elbratec EcoCharge foi pensado do catálogo ao cadastro de revendedor — role para ver.
+              </p>
+            </>
+          }
+        >
+          <div className="h-full w-full overflow-hidden">
+            <img
+              src="portfolio/27-ecocharge-home.webp"
+              alt="Página inicial do site Elbratec EcoCharge"
+              className="h-full w-full object-cover object-left-top"
+              loading="lazy"
+            />
+          </div>
+        </ContainerScroll>
+      </div>
     </section>
   )
 }
@@ -71,7 +95,7 @@ export function Vitrine() {
 /* ───────────── Serviços ───────────── */
 export function Servicos() {
   return (
-    <section id="servicos" className="mx-auto max-w-7xl px-4 py-24 md:px-8 md:py-32">
+    <section id="servicos" className="mx-auto max-w-7xl px-4 py-16 md:px-8 md:py-32">
       <SectionHead
         index="02"
         label="Serviços"
@@ -82,9 +106,9 @@ export function Servicos() {
         }
         aside="Do cartão de visita digital ao sistema com login. Se não estiver na lista, pergunte — muita coisa cabe aqui."
       />
-      <div className="mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="no-scrollbar -mx-4 mt-10 flex snap-x snap-mandatory gap-3 overflow-x-auto scroll-px-4 px-4 pb-2 sm:mx-0 sm:mt-14 sm:grid sm:grid-cols-2 sm:gap-4 sm:overflow-visible sm:px-0 sm:pb-0 lg:grid-cols-3">
         {servicos.map((s, i) => (
-          <BlurFade key={s.titulo} inView delay={0.05 * i}>
+          <BlurFade key={s.titulo} inView delay={0.05 * i} className="w-[80%] shrink-0 snap-start sm:w-auto">
             <MagicCard
               className="h-full rounded-2xl"
               gradientColor="rgba(0,237,253,0.07)"
@@ -92,18 +116,21 @@ export function Servicos() {
               gradientTo="#0b6c74"
               gradientSize={260}
             >
-              <div className="flex h-full min-h-60 flex-col p-7">
+              <div className="flex h-full min-h-52 flex-col p-6 md:min-h-60 md:p-7">
                 <div className="flex items-center justify-between">
                   <span className="font-mono text-xs text-muted">{String(i + 1).padStart(2, "0")}</span>
                   <span className="rounded-full bg-white/5 px-2.5 py-1 text-[11px] text-muted">{s.tag}</span>
                 </div>
-                <h3 className="font-wide mt-auto pt-10 text-2xl font-bold">{s.titulo}</h3>
+                <h3 className="font-wide mt-auto pt-8 text-2xl font-bold md:pt-10">{s.titulo}</h3>
                 <p className="mt-3 text-sm leading-relaxed text-muted">{s.texto}</p>
               </div>
             </MagicCard>
           </BlurFade>
         ))}
       </div>
+      <p className="mt-3 flex items-center gap-2 text-xs text-muted sm:hidden">
+        <Cursor className="h-2 w-2" /> Deslize para ver os {servicos.length} serviços
+      </p>
     </section>
   )
 }
@@ -112,7 +139,7 @@ export function Servicos() {
 export function Processo() {
   return (
     <section id="processo" className="border-y border-border bg-surface/40">
-      <div className="mx-auto max-w-7xl px-4 py-24 md:px-8 md:py-32">
+      <div className="mx-auto max-w-7xl px-4 py-16 md:px-8 md:py-32">
         <SectionHead
           index="03"
           label="Como funciona"
@@ -123,13 +150,13 @@ export function Processo() {
           }
           aside="Você fala comigo do começo ao fim — sem atendente, sem ticket, sem repassar o projeto para terceiros."
         />
-        <div className="mt-16 grid gap-px overflow-hidden rounded-2xl border border-border bg-border md:grid-cols-4">
+        <div className="mt-10 grid gap-px overflow-hidden rounded-2xl border border-border bg-border md:mt-16 md:grid-cols-4">
           {etapas.map((e, i) => (
             <BlurFade key={e.titulo} inView delay={0.08 * i} className="h-full">
-              <div className="flex h-full flex-col bg-background p-7 md:min-h-80">
-                <span className="font-wide text-5xl font-extrabold text-cyan">{i + 1}</span>
-                <h3 className="mt-10 text-lg font-semibold">{e.titulo}</h3>
-                <p className="mt-3 text-sm leading-relaxed text-muted">{e.texto}</p>
+              <div className="grid h-full grid-cols-[2.5rem_1fr] gap-x-3 bg-background p-5 md:flex md:min-h-80 md:flex-col md:p-7">
+                <span className="font-wide row-span-2 text-4xl leading-none font-extrabold text-cyan md:text-5xl">{i + 1}</span>
+                <h3 className="text-lg font-semibold md:mt-10">{e.titulo}</h3>
+                <p className="mt-1 text-sm leading-relaxed text-muted md:mt-3">{e.texto}</p>
               </div>
             </BlurFade>
           ))}
@@ -142,7 +169,7 @@ export function Processo() {
 /* ───────────── Pacotes ───────────── */
 export function Pacotes() {
   return (
-    <section id="pacotes" className="mx-auto max-w-7xl px-4 py-24 md:px-8 md:py-32">
+    <section id="pacotes" className="mx-auto max-w-7xl px-4 py-16 md:px-8 md:py-32">
       <SectionHead
         index="04"
         label="Pacotes"
@@ -153,18 +180,23 @@ export function Pacotes() {
         }
         aside="Cada orçamento é montado para o seu caso. Os pacotes servem de referência para a nossa primeira conversa."
       />
-      <div className="mt-14 grid items-stretch gap-4 lg:grid-cols-3">
+      <div className="no-scrollbar -mx-4 mt-10 flex snap-x snap-mandatory items-stretch gap-3 overflow-x-auto scroll-px-4 px-4 pb-2 md:mx-0 md:mt-14 md:grid md:gap-4 md:overflow-visible md:px-0 md:pb-0 lg:grid-cols-3">
         {pacotes.map((p, i) => (
-          <BlurFade key={p.nome} inView delay={0.08 * i} className="h-full">
+          <BlurFade
+            key={p.nome}
+            inView
+            delay={0.08 * i}
+            className={`h-full w-[86%] shrink-0 snap-center md:w-auto ${p.destaque ? "order-first md:order-none" : ""}`}
+          >
             <div
-              className={`relative flex h-full flex-col overflow-hidden rounded-2xl border p-8 ${
+              className={`relative flex h-full flex-col overflow-hidden rounded-2xl border p-6 md:p-8 ${
                 p.destaque ? "border-cyan/30 bg-surface-2" : "border-border bg-surface"
               }`}
             >
               {p.destaque && (
                 <>
                   <BorderBeam size={120} duration={8} colorFrom="#00edfd" colorTo="#ffffff" borderWidth={1.5} />
-                  <span className="absolute top-6 right-6 rounded-full bg-cyan px-3 py-1 text-[11px] font-bold tracking-wide text-black uppercase">
+                  <span className="mb-4 self-start rounded-full bg-cyan px-3 py-1 text-[11px] font-bold tracking-wide text-black uppercase md:absolute md:top-6 md:right-6 md:mb-0">
                     Recomendado
                   </span>
                 </>
@@ -194,6 +226,9 @@ export function Pacotes() {
           </BlurFade>
         ))}
       </div>
+      <p className="mt-3 flex items-center gap-2 text-xs text-muted md:hidden">
+        <Cursor className="h-2 w-2" /> Deslize para comparar os {pacotes.length} pacotes
+      </p>
     </section>
   )
 }
@@ -201,7 +236,7 @@ export function Pacotes() {
 /* ───────────── Perguntas ───────────── */
 export function Perguntas() {
   return (
-    <section id="duvidas" className="mx-auto max-w-7xl px-4 pb-24 md:px-8 md:pb-32">
+    <section id="duvidas" className="mx-auto max-w-7xl px-4 pb-16 md:px-8 md:pb-32">
       <SectionHead index="05" label="Dúvidas" title="Perguntas que sempre aparecem." />
       <div className="mt-12 md:ml-[25%]">
         {perguntas.map((q) => (
@@ -241,7 +276,7 @@ export function Contato() {
   return (
     <section id="contato" className="relative overflow-hidden border-t border-border">
       <div className="pointer-events-none absolute -bottom-40 left-1/2 h-[480px] w-[900px] -translate-x-1/2 rounded-full bg-cyan/10 blur-[160px]" />
-      <div className="relative mx-auto grid max-w-7xl gap-14 px-4 py-24 md:grid-cols-2 md:px-8 md:py-32">
+      <div className="relative mx-auto grid max-w-7xl gap-10 px-4 py-16 md:grid-cols-2 md:gap-14 md:px-8 md:py-32">
         <div>
           <p className="mb-6 flex items-center gap-2 text-sm tracking-[0.2em] text-muted uppercase">
             <Cursor /> Vamos conversar

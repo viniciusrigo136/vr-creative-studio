@@ -180,7 +180,8 @@ const Velaris = ({
     gl.uniform3fv(locs.colors, new Float32Array(colorsKey.split(",").slice(0, 4).flatMap(hexToRgb)))
 
     const resize = () => {
-      const dpr = Math.min(window.devicePixelRatio, 1.5)
+      // no celular renderiza em 1x: o fundo é desfocado, então não perde qualidade e economiza bateria
+      const dpr = Math.min(window.devicePixelRatio, window.innerWidth < 768 ? 1 : 1.5)
       canvas.width = Math.max(1, container.clientWidth * dpr)
       canvas.height = Math.max(1, container.clientHeight * dpr)
       gl.viewport(0, 0, canvas.width, canvas.height)

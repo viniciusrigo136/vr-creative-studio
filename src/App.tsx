@@ -110,7 +110,13 @@ function Rodape() {
 function BotaoFlutuante() {
   const [mostrar, setMostrar] = useState(false)
   useEffect(() => {
-    const on = () => setMostrar(window.scrollY > 700)
+    const on = () => {
+      // some no topo e quando o formulário de contato já está na tela
+      const contato = document.getElementById("contato")
+      const noContato = contato ? contato.getBoundingClientRect().top < window.innerHeight * 0.85 : false
+      setMostrar(window.scrollY > 600 && !noContato)
+    }
+    on()
     window.addEventListener("scroll", on, { passive: true })
     return () => window.removeEventListener("scroll", on)
   }, [])
@@ -120,7 +126,7 @@ function BotaoFlutuante() {
       target="_blank"
       rel="noreferrer"
       aria-label="Conversar no WhatsApp"
-      className={`fixed right-4 bottom-4 z-40 grid h-14 w-14 place-items-center rounded-full bg-cyan text-black shadow-[0_10px_40px_-5px_rgba(0,237,253,0.5)] transition-all duration-300 hover:scale-105 md:right-8 md:bottom-8 ${
+      className={`fixed right-4 bottom-[calc(1rem+env(safe-area-inset-bottom))] z-40 grid h-13 w-13 place-items-center md:h-14 md:w-14 rounded-full bg-cyan text-black shadow-[0_10px_40px_-5px_rgba(0,237,253,0.5)] transition-all duration-300 hover:scale-105 md:right-8 md:bottom-8 ${
         mostrar ? "translate-y-0 opacity-100" : "pointer-events-none translate-y-6 opacity-0"
       }`}
     >

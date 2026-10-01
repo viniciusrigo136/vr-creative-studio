@@ -29,6 +29,9 @@
 
 html {
   scroll-behavior: smooth;
+  scroll-padding-top: 4.5rem; /* âncoras não ficam escondidas atrás da navbar fixa */
+  -webkit-text-size-adjust: 100%;
+  -webkit-tap-highlight-color: transparent;
   background: var(--color-background);
   color-scheme: dark;
 }
@@ -77,3 +80,12 @@ details > summary::-webkit-details-marker { display: none; }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
 }
+
+/* Carrosséis de arrastar no celular, sem barra de rolagem aparente */
+.no-scrollbar {
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+.no-scrollbar::-webkit-scrollbar { display: none; }
+
+a, button { touch-action: manipulation; }

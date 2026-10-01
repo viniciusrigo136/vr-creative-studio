@@ -32,16 +32,16 @@ function Caso({ p, i, onOpen }: { p: Projeto; i: number; onOpen: () => void }) {
   const telas = shots[p.id]?.length ?? 0
   return (
     <BlurFade inView inViewMargin="-80px">
-      <article className="group grid items-center gap-8 border-t border-border py-14 md:grid-cols-12 md:gap-12 md:py-20">
-        <div className={`md:col-span-5 ${invert ? "md:order-2" : ""}`}>
+      <article className="group grid items-center gap-6 border-t border-border py-10 md:grid-cols-12 md:gap-12 md:py-20">
+        <div className={`md:col-span-5 ${invert ? "md:order-2" : "md:order-1"}`}>
           <div className="flex items-baseline gap-4">
-            <span className="font-wide text-6xl font-extrabold text-white/10 md:text-8xl">{p.numero}</span>
+            <span className="font-wide text-5xl font-extrabold text-white/10 md:text-8xl">{p.numero}</span>
             <span className="text-xs font-semibold tracking-[0.2em] text-cyan uppercase">{p.tipo}</span>
           </div>
-          <h3 className="font-wide mt-4 text-3xl font-bold md:text-4xl">{p.nome}</h3>
+          <h3 className="font-wide mt-3 text-[1.75rem] leading-tight font-bold md:mt-4 md:text-4xl">{p.nome}</h3>
           <p className="mt-1 text-sm text-muted">{p.setor}</p>
-          <p className="mt-6 leading-relaxed text-foreground/80">{p.resumo}</p>
-          <ul className="mt-6 flex flex-wrap gap-2">
+          <p className="mt-4 leading-relaxed text-foreground/80 md:mt-6">{p.resumo}</p>
+          <ul className="mt-5 flex flex-wrap gap-2 md:mt-6">
             {p.entregas.map((e) => (
               <li key={e} className="rounded-full border border-border px-3 py-1 text-xs text-muted">
                 {e}
@@ -50,7 +50,7 @@ function Caso({ p, i, onOpen }: { p: Projeto; i: number; onOpen: () => void }) {
           </ul>
           <button
             onClick={onOpen}
-            className="mt-8 inline-flex cursor-pointer items-center gap-2 border-b border-cyan/40 pb-1 text-sm font-semibold text-foreground transition hover:border-cyan hover:text-cyan"
+            className="mt-6 inline-flex min-h-11 w-full cursor-pointer items-center justify-center gap-2 rounded-full border border-cyan/40 px-5 text-sm font-semibold text-foreground transition hover:border-cyan hover:text-cyan active:scale-[0.98] md:mt-8 md:min-h-0 md:w-auto md:justify-start md:rounded-none md:border-0 md:border-b md:px-0 md:pb-1"
           >
             Ver {telas > 1 ? `as ${telas} telas` : "a tela"} do projeto <ArrowUpRight className="h-4 w-4" />
           </button>
@@ -59,9 +59,12 @@ function Caso({ p, i, onOpen }: { p: Projeto; i: number; onOpen: () => void }) {
         <button
           onClick={onOpen}
           aria-label={`Abrir telas de ${p.nome}`}
-          className={`cursor-zoom-in text-left md:col-span-7 ${invert ? "md:order-1" : ""}`}
+          className={`relative order-first cursor-zoom-in text-left md:col-span-7 ${invert ? "md:order-1" : "md:order-2"}`}
         >
           <BrowserFrame src={p.capa} alt={`Página inicial do projeto ${p.nome}`} url={p.telasSeparadas ? `${p.nome} — sistema` : `${p.nome} — página inicial`} />
+          <span className="pointer-events-none absolute right-3 bottom-3 inline-flex items-center gap-1.5 rounded-full bg-black/75 px-3 py-1.5 text-xs font-medium text-white backdrop-blur md:hidden">
+            Toque para ver {telas > 1 ? `as ${telas} telas` : "a tela"}
+          </span>
         </button>
       </article>
     </BlurFade>
@@ -135,7 +138,7 @@ function Visualizador({ p, onClose }: { p: Projeto; onClose: () => void }) {
 export function Portfolio() {
   const [aberto, setAberto] = useState<Projeto | null>(null)
   return (
-    <section id="trabalhos" className="mx-auto max-w-7xl px-4 py-24 md:px-8 md:py-32">
+    <section id="trabalhos" className="mx-auto max-w-7xl px-4 py-16 md:px-8 md:py-32">
       <SectionHead
         index="01"
         label="Trabalhos"

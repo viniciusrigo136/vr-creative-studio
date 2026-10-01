@@ -31,7 +31,7 @@ export function SectionHead({
   aside?: ReactNode
 }) {
   return (
-    <div className="grid gap-8 border-t border-border pt-6 md:grid-cols-12">
+    <div className="grid gap-4 border-t border-border pt-6 md:grid-cols-12 md:gap-8">
       <div className="flex items-baseline gap-4 md:col-span-3">
         <span className="font-mono text-xs text-cyan">{index}</span>
         <span className="text-xs font-semibold tracking-[0.22em] text-muted uppercase">{label}</span>
