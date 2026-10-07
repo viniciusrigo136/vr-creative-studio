@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react"
-import { AnimatePresence, motion } from "motion/react"
+import { AnimatePresence, m } from "motion/react"
 import { ArrowUpRight, X } from "lucide-react"
 import { BlurFade } from "@/components/ui/blur-fade"
 import { Cursor, SectionHead, WhatsIcon } from "@/components/bits"
 import { AutoScrollShot, Parallax, ShotSlides } from "@/components/fx"
 import { linkWhatsApp, projetos, type Projeto } from "@/content"
 import { shots } from "@/shots"
+import { srcsetDe } from "@/lib/imagens"
 
 /** Telas usadas na prévia animada: a página inicial inteira, ou as telas do sistema */
 function telasDaPrevia(p: Projeto) {
@@ -37,7 +38,7 @@ function BrowserFrame({ p, alt, url }: { p: Projeto; alt: string; url: string })
         ) : telas.length ? (
           <AutoScrollShot imagens={telas} alt={alt} />
         ) : (
-          <img src={p.capa} alt={alt} loading="lazy" className="h-full w-full object-cover object-left-top" />
+          <img src={p.capa} alt={alt} loading="lazy" decoding="async" width={1600} height={1000} className="h-full w-full object-cover object-left-top" />
         )}
       </div>
     </div>
@@ -76,20 +77,27 @@ function Caso({ p, total, onOpen }: { p: Projeto; total: number; onOpen: () => v
       </BlurFade>
 
       <Parallax distancia={20} className="mt-8 md:mt-12">
-        <motion.button
+        <m.button
           onClick={onOpen}
-          aria-label={`Abrir telas de ${p.nome}`}
           className="relative block w-full cursor-zoom-in text-left transition-transform active:scale-[0.99]"
-          initial={{ clipPath: "inset(8% 6% 8% 6% round 16px)", opacity: 0.4 }}
-          whileInView={{ clipPath: "inset(0% 0% 0% 0% round 12px)", opacity: 1 }}
+          // só recorte (sem opacidade): o texto da moldura nunca fica "apagado" com contraste baixo
+          initial={{ clipPath: "inset(8% 6% 8% 6% round 16px)" }}
+          whileInView={{ clipPath: "inset(0% 0% 0% 0% round 12px)" }}
           viewport={{ once: true, margin: "-80px" }}
           transition={{ duration: 1.1, ease: [0.22, 1, 0.36, 1] }}
         >
-          <BrowserFrame p={p} alt={`Página inicial do projeto ${p.nome}`} url={p.telasSeparadas ? `${p.nome} — sistema` : `${p.nome} — página inicial`} />
-          <span className="absolute right-3 bottom-3 inline-flex items-center gap-1.5 rounded-full bg-black/70 px-3 py-1.5 text-xs font-medium text-foreground backdrop-blur md:hidden">
+          {/* Para leitores de tela o botão se chama "Abrir telas de …"; a moldura e o aviso são só visuais */}
+          <span className="sr-only">Abrir telas de {p.nome}</span>
+          <span aria-hidden="true" className="block">
+            <BrowserFrame p={p} alt="" url={p.telasSeparadas ? `${p.nome} — sistema` : `${p.nome} — página inicial`} />
+          </span>
+          <span
+            aria-hidden="true"
+            className="absolute right-3 bottom-3 inline-flex items-center gap-1.5 rounded-full bg-black/70 px-3 py-1.5 text-xs font-medium text-foreground backdrop-blur md:hidden"
+          >
             Toque para ver tudo <ArrowUpRight className="h-3.5 w-3.5" />
           </span>
-        </motion.button>
+        </m.button>
       </Parallax>
 
       <BlurFade inView inViewMargin="-60px">
@@ -134,7 +142,7 @@ function Visualizador({ p, onClose }: { p: Projeto; onClose: () => void }) {
 
   const lista = shots[p.id] ?? []
   return (
-    <motion.div
+    <m.div
       className="fixed inset-0 z-[70] flex flex-col bg-black/90 backdrop-blur-md"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
@@ -158,7 +166,7 @@ function Visualizador({ p, onClose }: { p: Projeto; onClose: () => void }) {
         </button>
       </div>
       <div className="flex-1 overflow-y-auto overscroll-contain px-3 py-6 md:px-8">
-        <motion.div
+        <m.div
           initial={{ y: 30, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.4, ease: "easeOut" }}
@@ -172,6 +180,9 @@ function Visualizador({ p, onClose }: { p: Projeto; onClose: () => void }) {
             <img
               key={s.src}
               src={s.src}
+              srcSet={srcsetDe(s.src, s.w)}
+              sizes="(min-width: 768px) min(calc(100vw - 4rem), 1024px), calc(100vw - 1.5rem)"
+              decoding="async"
               width={s.w}
               height={s.h}
               loading="lazy"
@@ -179,7 +190,7 @@ function Visualizador({ p, onClose }: { p: Projeto; onClose: () => void }) {
               className={p.telasSeparadas ? "block h-auto w-full rounded-xl border border-border" : "block h-auto w-full"}
             />
           ))}
-        </motion.div>
+        </m.div>
         <div className="mx-auto mt-10 mb-6 flex max-w-5xl flex-col items-center gap-4 rounded-2xl border border-border bg-surface p-8 text-center">
           <p className="font-wide text-2xl font-bold md:text-3xl">Quer um site assim para o seu negócio?</p>
           <a
@@ -192,7 +203,7 @@ function Visualizador({ p, onClose }: { p: Projeto; onClose: () => void }) {
           </a>
         </div>
       </div>
-    </motion.div>
+    </m.div>
   )
 }
 

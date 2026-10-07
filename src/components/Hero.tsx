@@ -8,6 +8,9 @@ import { linkWhatsApp } from "@/content"
 import { shots } from "@/shots"
 
 const CORES_FUNDO = ["#00788a", "#00d8ea", "#0b5f96", "#5ff0fb"]
+// Degradê estático parecido com o fundo animado: aparece na hora, enquanto o WebGL carrega
+const FUNDO_INICIAL =
+  "radial-gradient(55% 45% at 78% 72%, rgba(0,216,234,0.55), transparent 70%), radial-gradient(60% 50% at 30% 35%, rgba(0,120,138,0.45), transparent 70%), radial-gradient(40% 35% at 85% 20%, rgba(11,95,150,0.35), transparent 70%), #04161b"
 
 const numeros = [
   { n: Object.values(shots).flat().filter((s) => !s.src.includes("capa")).length, rotulo: "telas desenhadas" },
@@ -21,7 +24,16 @@ export function Hero() {
     <section id="topo" className="relative isolate overflow-hidden pt-32 pb-16 md:pt-48 md:pb-28">
       {/* Fundo Velaris (21st.dev) nas cores da marca */}
       <div aria-hidden="true" className="absolute inset-0 -z-10">
-        <Velaris height="100%" bg="#04161b" colors={CORES_FUNDO} speed={4} grain={0.25} scale={1.2} sharpness={1.8} />
+        <Velaris
+          height="100%"
+          bg="#04161b"
+          colors={CORES_FUNDO}
+          speed={4}
+          grain={0.25}
+          scale={1.2}
+          sharpness={1.8}
+          placeholder={FUNDO_INICIAL}
+        />
         <div className="absolute inset-0 bg-gradient-to-r from-background/70 via-background/20 to-transparent" />
         <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-b from-transparent to-background" />
       </div>
@@ -48,14 +60,14 @@ export function Hero() {
         </h1>
 
         <div className="mt-10 grid gap-10 md:mt-14 md:grid-cols-12">
-          <BlurFade delay={0.4} className="md:col-span-6">
+          <BlurFade delay={0.2} className="md:col-span-6">
             <p className="max-w-xl text-lg leading-relaxed text-foreground/90 [text-shadow:0_1px_10px_rgba(0,0,0,0.7)] md:text-xl">
               Sites, landing pages e sistemas sob medida para empresas que querem transmitir confiança, vender mais e se
               destacar online.
             </p>
           </BlurFade>
 
-          <BlurFade delay={0.5} className="flex flex-col gap-3 sm:flex-row md:col-span-6 md:items-end md:justify-end">
+          <BlurFade delay={0.3} className="flex flex-col gap-3 sm:flex-row md:col-span-6 md:items-end md:justify-end">
             <a
               href={linkWhatsApp("Olá! Quero criar um projeto para o meu negócio.")}
               target="_blank"
@@ -75,7 +87,7 @@ export function Hero() {
           </BlurFade>
         </div>
 
-        <BlurFade delay={0.6}>
+        <BlurFade delay={0.4}>
           <dl className="mt-16 grid grid-cols-2 border-t border-border md:mt-24 md:grid-cols-4">
             {numeros.map((item) => (
               <div key={item.rotulo} className="border-border py-6 pl-4 even:border-l md:[&:not(:first-child)]:border-l md:first:pl-0 [&:nth-child(1)]:pl-0 [&:nth-child(3)]:pl-0 md:[&:nth-child(3)]:pl-4"

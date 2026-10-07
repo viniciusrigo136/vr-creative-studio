@@ -1,7 +1,7 @@
 // Velaris — fundo WebGL animado do 21st.dev (simplex noise + grão),
 // com pequenas correções: cores estáveis entre renders, limpeza dos
 // recursos WebGL, pausa fora da tela e respeito a prefers-reduced-motion.
-import { useEffect, useRef, type ReactNode } from "react"
+import { useEffect, useRef, useState, type ReactNode } from "react"
 import { cn } from "@/lib/utils"
 
 const vertexShaderGLSL = `
@@ -103,6 +103,8 @@ export interface VelarisProps {
   height?: string
   /** Tamanho das manchas: maior = mais detalhes (padrão 1) */
   scale?: number
+  /** Fundo CSS mostrado enquanto o WebGL ainda não começou (deixe parecido com o resultado final) */
+  placeholder?: string
   /** Definição das bordas entre cores: maior = menos desfoque (padrão 1) */
   sharpness?: number
   className?: string
@@ -124,113 +126,152 @@ const Velaris = ({
   height = "100vh",
   scale = 1,
   sharpness = 1,
+  placeholder,
   className,
   children,
 }: VelarisProps) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
   const containerRef = useRef<HTMLDivElement | null>(null)
   const colorsKey = colors.join(",")
+  const [pronto, setPronto] = useState(false)
 
   useEffect(() => {
     const canvas = canvasRef.current
     const container = containerRef.current
     if (!canvas || !container) return
 
-    const gl = canvas.getContext("webgl")
-    if (!gl) return
+    let limpar = () => {}
+    let cancelado = false
 
-    const createShader = (type: number, src: string) => {
-      const s = gl.createShader(type)!
-      gl.shaderSource(s, src)
-      gl.compileShader(s)
-      return s
+    // Desempenho: compilar o shader é pesado no celular. Só começa depois que a página
+    // terminou de carregar e o navegador está ocioso; até lá aparece o `placeholder`.
+    const iniciar = () => {
+      if (cancelado) return
+      const gl = canvas.getContext("webgl")
+      if (!gl) return
+
+      const createShader = (type: number, src: string) => {
+        const s = gl.createShader(type)!
+        gl.shaderSource(s, src)
+        gl.compileShader(s)
+        return s
+      }
+
+      const vs = createShader(gl.VERTEX_SHADER, vertexShaderGLSL)
+      const fs = createShader(gl.FRAGMENT_SHADER, fragmentShaderGLSL)
+      const program = gl.createProgram()!
+      gl.attachShader(program, vs)
+      gl.attachShader(program, fs)
+      gl.linkProgram(program)
+      gl.useProgram(program)
+
+      const buffer = gl.createBuffer()
+      gl.bindBuffer(gl.ARRAY_BUFFER, buffer)
+      gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 1, -1, -1, 1, 1, 1]), gl.STATIC_DRAW)
+
+      const pos = gl.getAttribLocation(program, "position")
+      gl.enableVertexAttribArray(pos)
+      gl.vertexAttribPointer(pos, 2, gl.FLOAT, false, 0, 0)
+
+      const locs = {
+        res: gl.getUniformLocation(program, "u_resolution"),
+        time: gl.getUniformLocation(program, "u_time"),
+        grain: gl.getUniformLocation(program, "u_grain"),
+        colors: gl.getUniformLocation(program, "u_colors"),
+        bg: gl.getUniformLocation(program, "u_bg"),
+        scale: gl.getUniformLocation(program, "u_scale"),
+        sharp: gl.getUniformLocation(program, "u_sharp"),
+      }
+
+      // uniforms fixos: enviados uma vez
+      gl.uniform1f(locs.grain, grain)
+      gl.uniform1f(locs.scale, scale)
+      gl.uniform1f(locs.sharp, sharpness)
+      gl.uniform3f(locs.bg, ...hexToRgb(bg))
+      gl.uniform3fv(locs.colors, new Float32Array(colorsKey.split(",").slice(0, 4).flatMap(hexToRgb)))
+
+      // Tamanho vem do ResizeObserver (contentRect): não força o navegador a recalcular o layout
+      const resize = (largura: number, altura: number) => {
+        // no celular, 1 pixel por pixel de tela basta para um degradê: metade do trabalho da placa de vídeo
+        const dpr = Math.min(window.devicePixelRatio, largura < 768 ? 1 : 1.5)
+        canvas.width = Math.max(1, Math.round(largura * dpr))
+        canvas.height = Math.max(1, Math.round(altura * dpr))
+        gl.viewport(0, 0, canvas.width, canvas.height)
+      }
+      // Com "reduzir movimento" ligado o fundo continua animando, só que mais devagar
+      const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches
+      const ritmo = reduce ? 0.8 : 1
+
+      let visivel = true
+      const io = new IntersectionObserver(([e]) => {
+        const estava = visivel
+        visivel = e.isIntersecting
+        if (visivel && !estava) raf = requestAnimationFrame(render)
+      })
+      io.observe(container)
+
+      let raf = 0
+      let primeiro = true
+      const inicio = 20000 // começa num ponto já "formado" do gradiente
+      const draw = (t: number) => {
+        gl.uniform2f(locs.res, canvas.width, canvas.height)
+        gl.uniform1f(locs.time, (inicio + t * ritmo) * 0.001 * speed)
+        gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4)
+      }
+      const render = (t: number) => {
+        draw(t)
+        if (primeiro) {
+          primeiro = false
+          setPronto(true)
+        }
+        if (visivel) raf = requestAnimationFrame(render)
+      }
+      // redimensionar o canvas apaga o desenho: redesenha na hora
+      const ro = new ResizeObserver(([e]) => {
+        resize(e.contentRect.width, e.contentRect.height)
+        draw(performance.now())
+        if (!raf) raf = requestAnimationFrame(render)
+      })
+      ro.observe(container)
+
+      limpar = () => {
+        ro.disconnect()
+        io.disconnect()
+        cancelAnimationFrame(raf)
+        gl.deleteBuffer(buffer)
+        gl.deleteProgram(program)
+        gl.deleteShader(vs)
+        gl.deleteShader(fs)
+      }
     }
 
-    const vs = createShader(gl.VERTEX_SHADER, vertexShaderGLSL)
-    const fs = createShader(gl.FRAGMENT_SHADER, fragmentShaderGLSL)
-    const program = gl.createProgram()!
-    gl.attachShader(program, vs)
-    gl.attachShader(program, fs)
-    gl.linkProgram(program)
-    gl.useProgram(program)
-
-    const buffer = gl.createBuffer()
-    gl.bindBuffer(gl.ARRAY_BUFFER, buffer)
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 1, -1, -1, 1, 1, 1]), gl.STATIC_DRAW)
-
-    const pos = gl.getAttribLocation(program, "position")
-    gl.enableVertexAttribArray(pos)
-    gl.vertexAttribPointer(pos, 2, gl.FLOAT, false, 0, 0)
-
-    const locs = {
-      res: gl.getUniformLocation(program, "u_resolution"),
-      time: gl.getUniformLocation(program, "u_time"),
-      grain: gl.getUniformLocation(program, "u_grain"),
-      colors: gl.getUniformLocation(program, "u_colors"),
-      bg: gl.getUniformLocation(program, "u_bg"),
-      scale: gl.getUniformLocation(program, "u_scale"),
-      sharp: gl.getUniformLocation(program, "u_sharp"),
+    let idle = 0
+    let timer = 0
+    const agendar = () => {
+      if (typeof window.requestIdleCallback === "function") idle = window.requestIdleCallback(iniciar, { timeout: 2500 })
+      else timer = setTimeout(iniciar, 600)
     }
-
-    // uniforms fixos: enviados uma vez
-    gl.uniform1f(locs.grain, grain)
-    gl.uniform1f(locs.scale, scale)
-    gl.uniform1f(locs.sharp, sharpness)
-    gl.uniform3f(locs.bg, ...hexToRgb(bg))
-    gl.uniform3fv(locs.colors, new Float32Array(colorsKey.split(",").slice(0, 4).flatMap(hexToRgb)))
-
-    const resize = () => {
-      const dpr = Math.min(window.devicePixelRatio, 1.5)
-      canvas.width = Math.max(1, container.clientWidth * dpr)
-      canvas.height = Math.max(1, container.clientHeight * dpr)
-      gl.viewport(0, 0, canvas.width, canvas.height)
-    }
-    // Com "reduzir movimento" ligado o fundo continua animando, só que mais devagar
-    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches
-    const ritmo = reduce ? 0.8 : 1
-
-    let visivel = true
-    const io = new IntersectionObserver(([e]) => {
-      const estava = visivel
-      visivel = e.isIntersecting
-      if (visivel && !estava) raf = requestAnimationFrame(render)
-    })
-    io.observe(container)
-
-    let raf = 0
-    const inicio = 20000 // começa num ponto já "formado" do gradiente
-    const draw = (t: number) => {
-      gl.uniform2f(locs.res, canvas.width, canvas.height)
-      gl.uniform1f(locs.time, (inicio + t * ritmo) * 0.001 * speed)
-      gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4)
-    }
-    const render = (t: number) => {
-      draw(t)
-      if (visivel) raf = requestAnimationFrame(render)
-    }
-    // redimensionar o canvas apaga o desenho: redesenha na hora
-    const ro = new ResizeObserver(() => {
-      resize()
-      draw(performance.now())
-    })
-    ro.observe(container)
-    resize()
-    raf = requestAnimationFrame(render)
+    if (document.readyState === "complete") agendar()
+    else window.addEventListener("load", agendar, { once: true })
 
     return () => {
-      ro.disconnect()
-      io.disconnect()
-      cancelAnimationFrame(raf)
-      gl.deleteBuffer(buffer)
-      gl.deleteProgram(program)
-      gl.deleteShader(vs)
-      gl.deleteShader(fs)
+      cancelado = true
+      window.removeEventListener("load", agendar)
+      if (idle) window.cancelIdleCallback(idle)
+      clearTimeout(timer)
+      limpar()
     }
   }, [bg, colorsKey, speed, grain, scale, sharpness])
 
   return (
-    <div ref={containerRef} style={{ height }} className={cn("relative w-full overflow-hidden", className)}>
-      <canvas ref={canvasRef} className="pointer-events-none absolute inset-0 h-full w-full" />
+    <div ref={containerRef} style={{ height, background: placeholder }} className={cn("relative w-full overflow-hidden", className)}>
+      <canvas
+        ref={canvasRef}
+        className={cn(
+          "pointer-events-none absolute inset-0 h-full w-full transition-opacity duration-1000",
+          pronto ? "opacity-100" : "opacity-0",
+        )}
+      />
       <div className="relative z-10 h-full w-full">{children}</div>
     </div>
   )

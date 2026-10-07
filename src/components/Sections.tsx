@@ -1,5 +1,5 @@
 import { useRef, useState, type FormEvent } from "react"
-import { AnimatePresence, motion, useScroll, useSpring } from "motion/react"
+import { AnimatePresence, m, useInView, useScroll, useSpring } from "motion/react"
 import { ArrowUpRight, Check, Mail, Plus, Quote } from "lucide-react"
 import { BlurFade } from "@/components/ui/blur-fade"
 import { BorderBeam } from "@/components/ui/border-beam"
@@ -7,6 +7,7 @@ import { ContainerScroll } from "@/components/ui/container-scroll-animation"
 import { Marquee } from "@/components/ui/marquee"
 import { Cursor, SectionHead, WhatsIcon } from "@/components/bits"
 import { MaskReveal, SnapRow } from "@/components/fx"
+import { srcsetDe } from "@/lib/imagens"
 import {
   clientes,
   contato,
@@ -77,6 +78,11 @@ export function Vitrine() {
         <div className="h-full w-full overflow-hidden">
           <img
             src="portfolio/27-ecocharge-home.webp"
+            srcSet={srcsetDe("portfolio/27-ecocharge-home.webp", 1348)}
+            sizes="(min-width: 768px) 1024px, 100vw"
+            width={1348}
+            height={774}
+            decoding="async"
             alt="Página inicial do site Elbratec EcoCharge"
             className="h-full w-full object-cover object-left-top"
             loading="lazy"
@@ -103,7 +109,7 @@ export function Diferenciais() {
       />
       <ol className="mt-14 grid md:mt-20 md:grid-cols-2 md:gap-x-16">
         {diferenciais.map((d, i) => (
-            <motion.li key={d.titulo} {...surgir(i)} className="group relative border-t border-border py-8 md:py-10">
+            <m.li key={d.titulo} {...surgir(i)} className="group relative border-t border-border py-8 md:py-10">
               <span
                 aria-hidden="true"
                 className="absolute -top-px left-0 h-px w-full origin-left scale-x-0 bg-cyan transition-transform duration-700 ease-out group-hover:scale-x-100"
@@ -115,7 +121,7 @@ export function Diferenciais() {
                   <p className="mt-3 max-w-md leading-relaxed text-muted">{d.texto}</p>
                 </div>
               </div>
-            </motion.li>
+            </m.li>
         ))}
       </ol>
     </section>
@@ -139,7 +145,7 @@ export function Servicos() {
         />
         <ul className="mt-14 border-b border-border md:mt-20">
           {servicos.map((s, i) => (
-              <motion.li key={s.titulo} {...surgir(i)} className="group grid gap-3 border-t border-border py-7 transition-colors duration-500 md:grid-cols-12 md:items-baseline md:gap-8 md:py-10 md:hover:bg-white/[0.02]">
+              <m.li key={s.titulo} {...surgir(i)} className="group grid gap-3 border-t border-border py-7 transition-colors duration-500 md:grid-cols-12 md:items-baseline md:gap-8 md:py-10 md:hover:bg-white/[0.02]">
                 <div className="flex items-center justify-between md:col-span-1 md:block">
                   <span className="font-mono text-xs text-muted transition-colors group-hover:text-cyan">
                     {String(i + 1).padStart(2, "0")}
@@ -153,7 +159,7 @@ export function Servicos() {
                 <span className="hidden text-right text-[11px] tracking-[0.18em] text-muted uppercase md:col-span-1 md:block">
                   {s.tag}
                 </span>
-              </motion.li>
+              </m.li>
           ))}
         </ul>
         <p className="mt-10 text-muted">
@@ -182,13 +188,13 @@ function LinhaDoTempo() {
   return (
     <ol ref={ref} className="relative mt-14 md:hidden">
       <span aria-hidden="true" className="absolute top-2 bottom-2 left-[1.375rem] w-px bg-border" />
-      <motion.span
+      <m.span
         aria-hidden="true"
         style={{ scaleY: progresso }}
         className="absolute top-2 bottom-2 left-[1.375rem] w-px origin-top bg-cyan"
       />
       {etapas.map((e, i) => (
-        <motion.li
+        <m.li
           key={e.titulo}
           className="relative pb-10 pl-16 last:pb-0"
           initial={{ opacity: 0, y: 16 }}
@@ -196,7 +202,7 @@ function LinhaDoTempo() {
           viewport={{ once: true, margin: "-25% 0px" }}
           transition={{ duration: 0.5, ease: "easeOut" }}
         >
-          <motion.span
+          <m.span
             className="font-wide absolute top-0 left-0 grid h-11 w-11 place-items-center rounded-full border bg-background text-lg font-extrabold"
             initial={{ borderColor: "#1f2328", color: "#8b939c" }}
             whileInView={{ borderColor: "#00edfd", color: "#00edfd" }}
@@ -204,10 +210,10 @@ function LinhaDoTempo() {
             transition={{ duration: 0.4 }}
           >
             {i + 1}
-          </motion.span>
+          </m.span>
           <h3 className="pt-2 text-lg font-semibold">{e.titulo}</h3>
           <p className="mt-2 text-sm leading-relaxed text-muted">{e.texto}</p>
-        </motion.li>
+        </m.li>
       ))}
     </ol>
   )
@@ -305,6 +311,19 @@ export function Clientes() {
 }
 
 /* ───────────── Pacotes ───────────── */
+
+/** O brilho da borda roda em JavaScript a cada quadro: só liga quando o cartão está na tela */
+function BeamQuandoVisivel() {
+  const ref = useRef<HTMLSpanElement>(null)
+  const visivel = useInView(ref, { margin: "100px" })
+  return (
+    <>
+      <span ref={ref} aria-hidden="true" className="pointer-events-none absolute inset-0" />
+      {visivel && <BorderBeam size={120} duration={8} colorFrom="#00edfd" colorTo="#ffffff" borderWidth={1.5} />}
+    </>
+  )
+}
+
 export function Pacotes() {
   const recomendado = Math.max(0, pacotes.findIndex((p) => p.destaque))
   return (
@@ -330,7 +349,7 @@ export function Pacotes() {
               >
                 {p.destaque && (
                   <>
-                    <BorderBeam size={120} duration={8} colorFrom="#00edfd" colorTo="#ffffff" borderWidth={1.5} />
+                    <BeamQuandoVisivel />
                     <span className="absolute top-7 right-7 rounded-full bg-cyan px-3 py-1 text-[11px] font-bold tracking-wide text-black uppercase md:top-9 md:right-9">
                       Recomendado
                     </span>
@@ -377,7 +396,7 @@ function Pergunta({ p, r, aberta, onToggle }: { p: string; r: string; aberta: bo
         className="flex w-full cursor-pointer items-start justify-between gap-6 py-6 text-left text-lg font-medium transition-colors md:text-xl"
       >
         <span className={aberta ? "text-foreground" : "text-foreground/90"}>{p}</span>
-        <motion.span
+        <m.span
           animate={{ rotate: aberta ? 45 : 0 }}
           transition={{ type: "spring", stiffness: 300, damping: 20 }}
           className={`mt-0.5 grid h-7 w-7 shrink-0 place-items-center rounded-full border transition-colors ${
@@ -385,11 +404,11 @@ function Pergunta({ p, r, aberta, onToggle }: { p: string; r: string; aberta: bo
           }`}
         >
           <Plus className="h-4 w-4" />
-        </motion.span>
+        </m.span>
       </button>
       <AnimatePresence initial={false}>
         {aberta && (
-          <motion.div
+          <m.div
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
@@ -397,7 +416,7 @@ function Pergunta({ p, r, aberta, onToggle }: { p: string; r: string; aberta: bo
             className="overflow-hidden"
           >
             <p className="max-w-2xl pb-6 leading-relaxed text-muted">{r}</p>
-          </motion.div>
+          </m.div>
         )}
       </AnimatePresence>
     </div>
@@ -540,7 +559,7 @@ export function Contato() {
             className="btn-shine mt-6 inline-flex w-full cursor-pointer items-center justify-center gap-3 rounded-full bg-cyan px-6 py-4 font-semibold text-black transition hover:bg-white active:scale-[0.98]"
           >
             <AnimatePresence mode="wait" initial={false}>
-              <motion.span
+              <m.span
                 key={enviado ? "ok" : "enviar"}
                 initial={{ y: 12, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
@@ -557,7 +576,7 @@ export function Contato() {
                     <WhatsIcon /> Enviar pelo WhatsApp
                   </>
                 )}
-              </motion.span>
+              </m.span>
             </AnimatePresence>
           </button>
           <p className="mt-3 text-center text-xs text-muted">A mensagem abre pronta no seu WhatsApp. Nada fica salvo aqui.</p>

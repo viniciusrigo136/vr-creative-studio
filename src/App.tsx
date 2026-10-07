@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { AnimatePresence, MotionConfig, motion } from "motion/react"
+import { AnimatePresence, LazyMotion, MotionConfig, domAnimation, m } from "motion/react"
 import { ArrowUpRight, Menu, X } from "lucide-react"
 import { Hero } from "@/components/Hero"
 import { Portfolio } from "@/components/Portfolio"
@@ -52,7 +52,7 @@ function Nav() {
     >
       <nav className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 md:h-20 md:px-8">
         <a href="#topo" className="flex shrink-0 items-center gap-2 sm:gap-3" aria-label="VR Creative — início">
-          <img src="brand/logo-mark.png" alt="" className="h-6 w-auto sm:h-7 md:h-8" />
+          <img src="brand/logo-mark.webp" alt="" width={109} height={64} className="h-6 w-auto sm:h-7 md:h-8" />
           <span className="block text-[11px] leading-none font-extrabold tracking-[0.2em] text-cyan sm:text-xs">
             CREATIVE
           </span>
@@ -85,7 +85,7 @@ function Nav() {
             aria-expanded={aberto}
           >
             <AnimatePresence mode="wait" initial={false}>
-              <motion.span
+              <m.span
                 key={aberto ? "x" : "m"}
                 initial={{ rotate: -90, opacity: 0 }}
                 animate={{ rotate: 0, opacity: 1 }}
@@ -93,14 +93,14 @@ function Nav() {
                 transition={{ duration: 0.18 }}
               >
                 {aberto ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-              </motion.span>
+              </m.span>
             </AnimatePresence>
           </button>
         </div>
       </nav>
       <AnimatePresence>
         {aberto && (
-          <motion.div
+          <m.div
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: "calc(100dvh - 4rem)", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
@@ -109,7 +109,7 @@ function Nav() {
           >
             <ul className="flex h-full flex-col px-4 pt-2 pb-[max(2rem,env(safe-area-inset-bottom))]">
               {links.map((l, i) => (
-                <motion.li
+                <m.li
                   key={l.href}
                   initial={{ x: -24, opacity: 0 }}
                   animate={{ x: 0, opacity: 1 }}
@@ -123,9 +123,9 @@ function Nav() {
                     {l.label}
                     <span className="font-mono text-xs font-normal text-muted">0{i + 1}</span>
                   </a>
-                </motion.li>
+                </m.li>
               ))}
-              <motion.li
+              <m.li
                 className="mt-auto pt-8"
                 initial={{ y: 20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
@@ -140,9 +140,9 @@ function Nav() {
                   <WhatsIcon /> Pedir orçamento
                 </a>
                 <p className="mt-3 text-center text-xs text-muted">Você fala direto comigo, pelo WhatsApp.</p>
-              </motion.li>
+              </m.li>
             </ul>
-          </motion.div>
+          </m.div>
         )}
       </AnimatePresence>
     </header>
@@ -153,7 +153,7 @@ function Rodape() {
   return (
     <footer className="border-t border-border">
       <div className="mx-auto max-w-7xl px-4 py-14 md:px-8">
-        <img src="brand/logo-full.png" alt="VR Creative" className="h-auto w-40" />
+        <img src="brand/logo-full.webp" alt="VR Creative" width={320} height={230} loading="lazy" decoding="async" className="h-auto w-40" />
         <div className="mt-10 flex flex-col justify-between gap-6 border-t border-border pt-8 text-sm text-muted md:flex-row">
           <p>© {new Date().getFullYear()} VR Creative · Vinicius Rigo</p>
           <div className="flex flex-wrap gap-x-6 gap-y-2">
@@ -177,22 +177,30 @@ function Rodape() {
 
 /** Mostra o atalho do WhatsApp depois do topo e esconde quando o formulário de contato já está na tela */
 function useMostrarCTA() {
-  const [mostrar, setMostrar] = useState(false)
+  const [passouDoTopo, setPassouDoTopo] = useState(false)
+  const [chegouNoContato, setChegouNoContato] = useState(false)
+
   useEffect(() => {
-    const on = () => {
-      const contatoEl = document.getElementById("contato")
-      const chegouNoContato = contatoEl ? window.scrollY + window.innerHeight > contatoEl.offsetTop + 120 : false
-      setMostrar(window.scrollY > 700 && !chegouNoContato)
-    }
+    // scrollY não força cálculo de layout; a posição do contato vem do IntersectionObserver
+    const on = () => setPassouDoTopo(window.scrollY > 700)
     on()
     window.addEventListener("scroll", on, { passive: true })
-    window.addEventListener("resize", on)
+
+    const contatoEl = document.getElementById("contato")
+    const obs = contatoEl
+      ? new IntersectionObserver(
+          ([e]) => setChegouNoContato(e.boundingClientRect.top < (e.rootBounds?.bottom ?? window.innerHeight)),
+          { rootMargin: "0px 0px -120px 0px" },
+        )
+      : null
+    if (contatoEl) obs?.observe(contatoEl)
+
     return () => {
       window.removeEventListener("scroll", on)
-      window.removeEventListener("resize", on)
+      obs?.disconnect()
     }
   }, [])
-  return mostrar
+  return passouDoTopo && !chegouNoContato
 }
 
 /* Computador: botão redondo com anel pulsando e um balão de convite */
@@ -222,7 +230,7 @@ function BarraCelular({ mostrar }: { mostrar: boolean }) {
   return (
     <AnimatePresence>
       {mostrar && (
-        <motion.div
+        <m.div
           initial={{ y: "120%" }}
           animate={{ y: 0 }}
           exit={{ y: "120%" }}
@@ -238,12 +246,12 @@ function BarraCelular({ mostrar }: { mostrar: boolean }) {
               href={linkWhatsApp()}
               target="_blank"
               rel="noreferrer"
-              className="btn-shine pulse-ring inline-flex shrink-0 items-center gap-2 rounded-xl bg-cyan px-4 py-3 text-sm font-semibold text-black active:scale-95"
+              className="btn-shine inline-flex shrink-0 items-center gap-2 rounded-xl bg-cyan px-4 py-3 text-sm font-semibold text-black active:scale-95"
             >
               <WhatsIcon className="h-4 w-4" /> Chamar no Whats
             </a>
           </div>
-        </motion.div>
+        </m.div>
       )}
     </AnimatePresence>
   )
@@ -252,6 +260,8 @@ function BarraCelular({ mostrar }: { mostrar: boolean }) {
 export default function App() {
   const mostrarCTA = useMostrarCTA()
   return (
+    // LazyMotion + "m": carrega só os recursos de animação usados no site (JS menor)
+    <LazyMotion features={domAnimation} strict>
     <MotionConfig reducedMotion="user">
       <div className="grain relative">
         <ScrollProgress />
@@ -274,5 +284,6 @@ export default function App() {
         <BarraCelular mostrar={mostrarCTA} />
       </div>
     </MotionConfig>
+    </LazyMotion>
   )
 }

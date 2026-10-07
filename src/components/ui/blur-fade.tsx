@@ -3,7 +3,7 @@
 import { useRef } from "react"
 import {
   AnimatePresence,
-  motion,
+  m,
   useInView,
   type MotionProps,
   type UseInViewOptions,
@@ -41,7 +41,8 @@ export function BlurFade({
   direction = "down",
   inView = false,
   inViewMargin = "-50px",
-  blur = "6px",
+  // Sem desfoque por padrão: animar "filter: blur" força o navegador a redesenhar (pior no celular).
+  blur = "0px",
   ...props
 }: BlurFadeProps) {
   const ref = useRef(null)
@@ -52,12 +53,12 @@ export function BlurFade({
       [direction === "left" || direction === "right" ? "x" : "y"]:
         direction === "right" || direction === "down" ? -offset : offset,
       opacity: 0,
-      filter: `blur(${blur})`,
+      ...(blur !== "0px" ? { filter: `blur(${blur})` } : {}),
     },
     visible: {
       [direction === "left" || direction === "right" ? "x" : "y"]: 0,
       opacity: 1,
-      filter: `blur(0px)`,
+      ...(blur !== "0px" ? { filter: "blur(0px)" } : {}),
     },
   }
   const combinedVariants = variant ?? defaultVariants
@@ -72,7 +73,7 @@ export function BlurFade({
 
   return (
     <AnimatePresence>
-      <motion.div
+      <m.div
         ref={ref}
         initial="hidden"
         animate={isInView ? "visible" : "hidden"}
@@ -88,7 +89,7 @@ export function BlurFade({
         {...props}
       >
         {children}
-      </motion.div>
+      </m.div>
     </AnimatePresence>
   )
 }

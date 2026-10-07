@@ -1,14 +1,15 @@
 // Efeitos e animações reutilizáveis, pensados primeiro para o celular.
 import { Children, useEffect, useRef, useState, type ReactNode } from "react"
-import { motion, useInView, useReducedMotion, useScroll, useSpring, useTransform } from "motion/react"
+import { m, useInView, useReducedMotion, useScroll, useSpring, useTransform } from "motion/react"
 import { cn } from "@/lib/utils"
+import { SIZES_MOLDURA, srcsetDe } from "@/lib/imagens"
 
 /* Barra fina no topo mostrando quanto da página já foi lida */
 export function ScrollProgress() {
   const { scrollYProgress } = useScroll()
   const scaleX = useSpring(scrollYProgress, { stiffness: 200, damping: 40, restDelta: 0.001 })
   return (
-    <motion.div
+    <m.div
       aria-hidden="true"
       style={{ scaleX }}
       className="fixed inset-x-0 top-0 z-[55] h-[2px] origin-left bg-gradient-to-r from-cyan-deep via-cyan to-white"
@@ -24,7 +25,7 @@ export function Parallax({ children, distancia = 30, className }: { children: Re
   const y = useTransform(scrollYProgress, [0, 1], [distancia, -distancia])
   return (
     <div ref={ref} className={className}>
-      <motion.div style={reduzir ? undefined : { y }}>{children}</motion.div>
+      <m.div style={reduzir ? undefined : { y }}>{children}</m.div>
     </div>
   )
 }
@@ -35,14 +36,14 @@ export function MaskReveal({ children, className, delay = 0 }: { children: React
   const visto = useInView(ref, { once: true, margin: "-60px" })
   return (
     <span ref={ref} className={cn("block overflow-hidden pb-[0.08em]", className)}>
-      <motion.span
+      <m.span
         className="block"
         initial={{ y: "105%", rotate: 2 }}
         animate={visto ? { y: "0%", rotate: 0 } : undefined}
         transition={{ duration: 0.8, delay, ease: [0.22, 1, 0.36, 1] }}
       >
         {children}
-      </motion.span>
+      </m.span>
     </span>
   )
 }
@@ -68,26 +69,28 @@ export function SnapRow({
   useEffect(() => {
     const el = ref.current
     if (!el) return
-    const filho = el.children[inicial] as HTMLElement | undefined
-    if (filho && el.scrollWidth > el.clientWidth) {
-      el.scrollLeft = filho.offsetLeft - (el.clientWidth - filho.clientWidth) / 2
-    }
-    const onScroll = () => {
-      const centro = el.scrollLeft + el.clientWidth / 2
-      let melhor = 0
-      let dist = Infinity
-      Array.from(el.children).forEach((c, i) => {
-        const h = c as HTMLElement
-        const d = Math.abs(h.offsetLeft + h.clientWidth / 2 - centro)
-        if (d < dist) {
-          dist = d
-          melhor = i
+    // Só no celular (onde vira carrossel): centraliza o item inicial, lendo o layout uma única vez
+    const celular = window.matchMedia("(max-width: 639px)").matches
+    const raf = celular
+      ? requestAnimationFrame(() => {
+          const filho = el.children[inicial] as HTMLElement | undefined
+          if (filho) el.scrollLeft = filho.offsetLeft - (el.clientWidth - filho.clientWidth) / 2
+        })
+      : 0
+    // Qual cartão está no centro: IntersectionObserver em vez de medir a cada rolagem (evita reflow)
+    const obs = new IntersectionObserver(
+      (entradas) => {
+        for (const e of entradas) {
+          if (e.isIntersecting) setAtivo(Array.prototype.indexOf.call(el.children, e.target))
         }
-      })
-      setAtivo(melhor)
+      },
+      { root: el, threshold: 0.6 },
+    )
+    Array.from(el.children).forEach((c) => obs.observe(c))
+    return () => {
+      cancelAnimationFrame(raf)
+      obs.disconnect()
     }
-    el.addEventListener("scroll", onScroll, { passive: true })
-    return () => el.removeEventListener("scroll", onScroll)
   }, [inicial])
 
   function irPara(i: number) {
@@ -149,7 +152,7 @@ export function AutoScrollShot({
 
   return (
     <div ref={ref} className="relative h-full w-full overflow-hidden">
-      <motion.div
+      <m.div
         className="will-change-transform"
         animate={rolar ? { y: ["0%", `-${desloc}%`] } : { y: "0%" }}
         transition={
@@ -162,6 +165,8 @@ export function AutoScrollShot({
           <img
             key={img.src}
             src={img.src}
+            srcSet={srcsetDe(img.src, img.w)}
+            sizes={SIZES_MOLDURA}
             width={img.w}
             height={img.h}
             alt={i === 0 ? alt : ""}
@@ -170,13 +175,21 @@ export function AutoScrollShot({
             className="block h-auto w-full"
           />
         ))}
-      </motion.div>
+      </m.div>
     </div>
   )
 }
 
 /* Troca as telas de um sistema em sequência, como um slideshow */
-export function ShotSlides({ imagens, alt, intervalo = 2800 }: { imagens: { src: string }[]; alt: string; intervalo?: number }) {
+export function ShotSlides({
+  imagens,
+  alt,
+  intervalo = 2800,
+}: {
+  imagens: { src: string; w: number; h: number }[]
+  alt: string
+  intervalo?: number
+}) {
   const ref = useRef<HTMLDivElement>(null)
   const naTela = useInView(ref, { margin: "-15% 0px" })
   const reduzir = useReducedMotion()
@@ -191,9 +204,13 @@ export function ShotSlides({ imagens, alt, intervalo = 2800 }: { imagens: { src:
   return (
     <div ref={ref} className="relative h-full w-full overflow-hidden bg-surface">
       {imagens.map((img, k) => (
-        <motion.img
+        <m.img
           key={img.src}
           src={img.src}
+          srcSet={srcsetDe(img.src, img.w)}
+          sizes={SIZES_MOLDURA}
+          width={img.w}
+          height={img.h}
           alt={k === 0 ? alt : ""}
           loading="lazy"
           decoding="async"

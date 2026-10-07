@@ -1,7 +1,7 @@
 // Container Scroll Animation — componente popular do 21st.dev (Aceternity UI),
 // adaptado para Vite + motion/react e para a paleta da VR.
 import React, { useEffect, useRef, useState } from "react"
-import { useScroll, useTransform, motion, type MotionValue } from "motion/react"
+import { useScroll, useTransform, m, type MotionValue } from "motion/react"
 
 export function ContainerScroll({
   titleComponent,
@@ -50,9 +50,9 @@ function Header({
   titleComponent: React.ReactNode
 }) {
   return (
-    <motion.div style={{ translateY: translate }} className="mx-auto max-w-5xl text-center">
+    <m.div style={{ translateY: translate }} className="mx-auto max-w-5xl text-center">
       {titleComponent}
-    </motion.div>
+    </m.div>
   )
 }
 
@@ -66,7 +66,7 @@ function Card({
   children: React.ReactNode
 }) {
   return (
-    <motion.div
+    <m.div
       style={{
         rotateX: rotate,
         scale,
@@ -78,6 +78,6 @@ function Card({
       <div className="h-full w-full overflow-hidden rounded-2xl bg-black md:rounded-2xl">
         {children}
       </div>
-    </motion.div>
+    </m.div>
   )
 }

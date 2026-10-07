@@ -19,21 +19,27 @@ npm run build      # gera a pasta dist/ pronta para publicar
 | Serviços, etapas, pacotes, perguntas | `src/content.ts` |
 | Prints dos projetos | `public/portfolio/` (lista em `src/shots.ts`) |
 | Logo e favicon | `public/brand/`, `public/favicon.png`, `public/og.jpg` |
-| Cores e fontes | `src/index.css` (bloco `@theme`) |
+| Cores | `src/index.css` (bloco `@theme`) |
+| Fontes | `src/fonts.css` (só o subconjunto latino, que cobre o português) |
 | Título e descrição para o Google | `index.html` |
+
+## Ao adicionar ou trocar imagens (importante para a velocidade)
+
+1. Coloque o print em `public/portfolio/` (formato `.webp`) e liste em `src/shots.ts`.
+2. Rode `npm run imagens` — gera a versão leve `-800.webp` que o celular baixa.
+3. **Ao trocar uma imagem que já existia, use um nome novo** (ex.: `capa-v2.webp`). As imagens ficam
+   1 ano em cache no navegador (`public/_headers` e `vercel.json`); com o mesmo nome, quem já visitou continua vendo a antiga.
 
 ## Componentes do 21st.dev usados
 
 | Componente | Autor no 21st.dev | Onde aparece |
 |---|---|---|
 | Container Scroll Animation | Aceternity | Vitrine 3D da EcoCharge |
-| Word Rotate | Magic UI | Palavra que troca no título |
 | Number Ticker | Magic UI | Números do topo |
 | Marquee | Magic UI | Faixa de segmentos |
-| Magic Card | Magic UI | Cartões de serviços (brilho segue o mouse) |
-| Border Beam | Magic UI | Pacote recomendado |
-| Blur Fade | Magic UI | Entrada suave das seções |
-| Velaris | 21st.dev | Fundo animado do topo (WebGL) |
+| Border Beam | Magic UI | Pacote recomendado (só anima quando está na tela) |
+| Blur Fade | Magic UI | Entrada suave das seções (sem desfoque, por desempenho) |
+| Velaris | 21st.dev | Fundo animado do topo (WebGL, começa depois que a página carrega) |
 
 Ficam em `src/components/ui/`. Os efeitos próprios do site (barra de progresso, títulos que sobem, carrossel com bolinhas no celular, prévias que rolam sozinhas no portfólio) ficam em `src/components/fx.tsx`. O projeto já tem `components.json`, então o CLI do shadcn funciona aqui. Para trocar ou adicionar outro, no 21st.dev clique em
 “Copy” no comando `npx shadcn@latest add ...` e rode na pasta do projeto, ou copie o código para essa pasta.

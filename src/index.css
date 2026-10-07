@@ -119,57 +119,33 @@ button {
   85%, 100% { transform: translateX(120%); }
 }
 
-/* Anel pulsando em volta do botão do WhatsApp */
+/* Anel pulsando em volta do botão do WhatsApp.
+   Anima só transform e opacity (roda na placa de vídeo, sem redesenhar a página).
+   --pulse-x / --pulse-y: quanto o anel cresce em cada direção. */
 .pulse-ring {
   position: relative;
+  isolation: isolate;
+  --pulse-x: 1.55;
+  --pulse-y: 1.55;
 }
 .pulse-ring::before {
   content: "";
   position: absolute;
   inset: 0;
+  z-index: -1;
   border-radius: inherit;
-  box-shadow: 0 0 0 0 rgba(0, 237, 253, 0.55);
+  background: rgba(0, 237, 253, 0.5);
   animation: pulse-ring 2.4s cubic-bezier(0.2, 0.6, 0.4, 1) infinite;
   pointer-events: none;
 }
 @keyframes pulse-ring {
-  0% { box-shadow: 0 0 0 0 rgba(0, 237, 253, 0.55); }
-  80%, 100% { box-shadow: 0 0 0 16px rgba(0, 237, 253, 0); }
-}
-
-/* Contorno animado que gira em volta de um cartão (só em telas de toque, onde não há o brilho do mouse) */
-@property --giro {
-  syntax: "<angle>";
-  initial-value: 0deg;
-  inherits: false;
-}
-.borda-giro {
-  position: relative;
-}
-@media (hover: none) {
-  .borda-giro::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    padding: 1px;
-    border-radius: inherit;
-    background: conic-gradient(from var(--giro), transparent 70%, var(--color-cyan) 85%, transparent 100%);
-    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-    -webkit-mask-composite: xor;
-    mask-composite: exclude;
-    animation: giro 5s linear infinite;
-    pointer-events: none;
-    z-index: 2;
-  }
-}
-@keyframes giro {
-  to { --giro: 360deg; }
+  0% { transform: scale(1); opacity: 0.55; }
+  80%, 100% { transform: scale(var(--pulse-x), var(--pulse-y)); opacity: 0; }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .btn-shine::after,
-  .pulse-ring::before,
-  .borda-giro::before {
+  .pulse-ring::before {
     animation: none;
   }
 }
