@@ -58,37 +58,69 @@ export function Faixa() {
 }
 
 /* ───────────── Vitrine com scroll 3D ───────────── */
+const vitrineTitulo = (
+  <>
+    <p className="mb-4 text-sm tracking-[0.2em] text-muted uppercase">Isto não é um template</p>
+    <h2 className="font-wide text-4xl leading-[0.95] font-extrabold md:text-7xl">
+      Nove páginas, <br />
+      <span className="serif-accent font-normal text-cyan">uma marca inteira.</span>
+    </h2>
+  </>
+)
+
+const VITRINE_IMG = "portfolio/27-ecocharge-home.webp"
+
 export function Vitrine() {
   return (
     <section className="overflow-hidden">
-      <ContainerScroll
-        titleComponent={
-          <>
-            <p className="mb-4 text-sm tracking-[0.2em] text-muted uppercase">Isto não é um template</p>
-            <h2 className="font-wide text-4xl leading-[0.95] font-extrabold md:text-7xl">
-              Nove páginas, <br />
-              <span className="serif-accent font-normal text-cyan">uma marca inteira.</span>
-            </h2>
-            <p className="mx-auto mt-6 mb-16 max-w-xl text-muted">
-              O site da Elbratec EcoCharge foi pensado do catálogo ao cadastro de revendedor — role para ver.
-            </p>
-          </>
-        }
-      >
-        <div className="h-full w-full overflow-hidden">
+      {/* Celular: versão leve, sem a animação 3D (que ocupa muita rolagem em tela pequena) */}
+      <div className="px-4 pt-4 pb-16 md:hidden">
+        <div className="text-center">{vitrineTitulo}</div>
+        <p className="mx-auto mt-4 max-w-sm text-center text-foreground/75">
+          O site da Elbratec EcoCharge foi pensado do catálogo ao cadastro de revendedor.
+        </p>
+        <div className="mt-8 rounded-[22px] border-4 border-[#2a2f35] bg-[#15181c] p-1.5 shadow-[0_30px_60px_-20px_rgba(0,0,0,0.9)]">
           <img
-            src="portfolio/27-ecocharge-home.webp"
-            srcSet={srcsetDe("portfolio/27-ecocharge-home.webp", 1348)}
-            sizes="(min-width: 768px) 1024px, 100vw"
+            src={VITRINE_IMG}
+            srcSet={srcsetDe(VITRINE_IMG, 1348)}
+            sizes="calc(100vw - 3rem)"
             width={1348}
             height={774}
-            decoding="async"
             alt="Página inicial do site Elbratec EcoCharge"
-            className="h-full w-full object-cover object-left-top"
+            className="aspect-[4/3] w-full rounded-2xl object-cover object-left-top"
             loading="lazy"
+            decoding="async"
           />
         </div>
-      </ContainerScroll>
+      </div>
+
+      {/* Computador: vitrine com scroll 3D */}
+      <div className="hidden md:block">
+        <ContainerScroll
+          titleComponent={
+            <>
+              {vitrineTitulo}
+              <p className="mx-auto mt-6 mb-16 max-w-xl text-muted">
+                O site da Elbratec EcoCharge foi pensado do catálogo ao cadastro de revendedor — role para ver.
+              </p>
+            </>
+          }
+        >
+          <div className="h-full w-full overflow-hidden">
+            <img
+              src={VITRINE_IMG}
+              srcSet={srcsetDe(VITRINE_IMG, 1348)}
+              sizes="1024px"
+              width={1348}
+              height={774}
+              alt="Página inicial do site Elbratec EcoCharge"
+              className="h-full w-full object-cover object-left-top"
+              loading="lazy"
+              decoding="async"
+            />
+          </div>
+        </ContainerScroll>
+      </div>
     </section>
   )
 }

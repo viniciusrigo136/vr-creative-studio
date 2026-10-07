@@ -34,6 +34,7 @@
 html {
   overflow-x: clip;
   scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%; /* iPhone não aumenta o texto sozinho ao girar a tela */
   background: var(--color-background);
   color-scheme: dark;
 }
@@ -88,6 +89,7 @@ details > summary::-webkit-details-marker { display: none; }
 a,
 button {
   -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation; /* toque responde na hora, sem esperar o "toque duplo para zoom" */
 }
 
 .no-scrollbar {
