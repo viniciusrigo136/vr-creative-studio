@@ -1,0 +1,175 @@
+@import "tailwindcss";
+
+@theme {
+  --color-background: #07080a;
+  --color-surface: #0e1013;
+  --color-surface-2: #14171b;
+  --color-border: #1f2328;
+  --color-foreground: #eef1f3;
+  --color-muted: #8b939c;
+  --color-cyan: #00edfd;
+  --color-cyan-deep: #00a9b5;
+
+  --font-display: "Archivo Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Inter Tight Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "Instrument Serif", ui-serif, Georgia, serif;
+
+  @keyframes marquee {
+    from { transform: translateX(0); }
+    to { transform: translateX(calc(-100% - var(--gap))); }
+  }
+  @keyframes marquee-vertical {
+    from { transform: translateY(0); }
+    to { transform: translateY(calc(-100% - var(--gap))); }
+  }
+}
+
+/* "inline": a duração (--duration) é lida no próprio elemento da faixa.
+   No @theme normal ela era lida na raiz da página, onde não existe, e a animação era descartada. */
+@theme inline {
+  --animate-marquee: marquee var(--duration) infinite linear;
+  --animate-marquee-vertical: marquee-vertical var(--duration) linear infinite;
+}
+
+html {
+  overflow-x: clip;
+  scroll-behavior: smooth;
+  background: var(--color-background);
+  color-scheme: dark;
+}
+
+body {
+  overflow-x: clip; /* nada de rolagem para o lado no celular durante as animações */
+  background: var(--color-background);
+  color: var(--color-foreground);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background: var(--color-cyan);
+  color: #000;
+}
+
+/* Títulos largos, no espírito da logo */
+.font-wide {
+  font-family: var(--font-display);
+  font-stretch: 118%;
+  letter-spacing: -0.035em;
+}
+
+.serif-accent {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+}
+
+/* Granulado sutil para tirar o "liso de IA" do fundo */
+.grain::before {
+  content: "";
+  position: fixed;
+  inset: -50%;
+  z-index: 60;
+  pointer-events: none;
+  opacity: 0.045;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+details > summary { list-style: none; }
+details > summary::-webkit-details-marker { display: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+}
+
+/* ───── Toque no celular ───── */
+a,
+button {
+  -webkit-tap-highlight-color: transparent;
+}
+
+.no-scrollbar {
+  scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Brilho que passa pelos botões principais de tempos em tempos */
+.btn-shine {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+.btn-shine::after {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  z-index: -1;
+  background: linear-gradient(110deg, transparent 30%, rgba(255, 255, 255, 0.65) 48%, transparent 66%);
+  transform: translateX(-120%);
+  animation: shine 4.5s ease-in-out infinite;
+  mix-blend-mode: soft-light;
+  pointer-events: none;
+}
+@keyframes shine {
+  0%, 55% { transform: translateX(-120%); }
+  85%, 100% { transform: translateX(120%); }
+}
+
+/* Anel pulsando em volta do botão do WhatsApp */
+.pulse-ring {
+  position: relative;
+}
+.pulse-ring::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: 0 0 0 0 rgba(0, 237, 253, 0.55);
+  animation: pulse-ring 2.4s cubic-bezier(0.2, 0.6, 0.4, 1) infinite;
+  pointer-events: none;
+}
+@keyframes pulse-ring {
+  0% { box-shadow: 0 0 0 0 rgba(0, 237, 253, 0.55); }
+  80%, 100% { box-shadow: 0 0 0 16px rgba(0, 237, 253, 0); }
+}
+
+/* Contorno animado que gira em volta de um cartão (só em telas de toque, onde não há o brilho do mouse) */
+@property --giro {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+.borda-giro {
+  position: relative;
+}
+@media (hover: none) {
+  .borda-giro::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    padding: 1px;
+    border-radius: inherit;
+    background: conic-gradient(from var(--giro), transparent 70%, var(--color-cyan) 85%, transparent 100%);
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    animation: giro 5s linear infinite;
+    pointer-events: none;
+    z-index: 2;
+  }
+}
+@keyframes giro {
+  to { --giro: 360deg; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .btn-shine::after,
+  .pulse-ring::before,
+  .borda-giro::before {
+    animation: none;
+  }
+}
