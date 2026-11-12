@@ -78,6 +78,9 @@ export const shots: Record<string, { src: string; w: number; h: number }[]> = {
     { src: "portfolio/106-tecgest-nova-os.webp", w: 1903, h: 908 },
     { src: "portfolio/107-tecgest-orcamentos.webp", w: 1919, h: 864 },
     { src: "portfolio/108-tecgest-contas-receber.webp", w: 1919, h: 864 },
+    { src: "portfolio/109-tecgest-clientes.webp", w: 1919, h: 869 },
+    { src: "portfolio/110-tecgest-estoque.webp", w: 1919, h: 868 },
+    { src: "portfolio/111-tecgest-configuracoes.webp", w: 1900, h: 1089 },
   ],
   chapgest: [
     { src: "portfolio/chapgest-capa.webp", w: 1672, h: 941 },

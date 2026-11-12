@@ -98,7 +98,7 @@ export const projetos: Projeto[] = [
       "Um sistema com login para abrir e acompanhar ordens de serviço, transformar orçamento em venda com garantia, controlar contas a receber, clientes e estoque, imprimir comprovantes em A4 ou térmica e avisar o cliente por WhatsApp e e-mail.",
     entregas: ["Ordens de serviço", "Orçamentos e vendas", "Contas a receber", "Clientes e estoque", "Impressão A4 e térmica", "Avisos por WhatsApp e e-mail"],
     capa: "portfolio/tecgest-capa.webp",
-    observacao: "A capa é ilustrativa e as telas mostram dados de demonstração.",
+    observacao: "A capa é ilustrativa e as telas mostram dados de demonstração; contatos e dados da empresa foram trocados.",
     telasSeparadas: true,
   },
   {
