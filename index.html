@@ -13,6 +13,22 @@
     <meta property="og:description" content="Sites, landing pages e sistemas sob medida para empresas que querem transmitir confiança, vender mais e se destacar online." />
     <meta property="og:image" content="/og.jpg" />
     <meta name="twitter:card" content="summary_large_image" />
+    <!-- Meta Pixel (VR Creative): PageView, Contact ao clicar no WhatsApp, Lead ao enviar o formulário -->
+    <script>
+      !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+      n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
+      n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
+      t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
+      document,'script','https://connect.facebook.net/en_US/fbevents.js');
+      fbq('init', '1128002686508516');
+      fbq('track', 'PageView');
+      document.addEventListener('click', function (ev) {
+        var a = ev.target.closest && ev.target.closest('a[href*="wa.me"], a[href*="api.whatsapp.com"]');
+        if (a) fbq('track', 'Contact', { content_name: (a.innerText || 'whatsapp').trim().slice(0, 50) });
+      }, true);
+      document.addEventListener('submit', function () { fbq('track', 'Lead'); }, true);
+    </script>
+    <noscript><img height="1" width="1" style="display:none" alt="" src="https://www.facebook.com/tr?id=1128002686508516&ev=PageView&noscript=1" /></noscript>
   </head>
   <body>
     <div id="root"></div>
