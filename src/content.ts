@@ -103,6 +103,7 @@ export const projetos: Projeto[] = [
   },
   {
     id: "chapgest",
+    cor: "#7c8cff",
     numero: "06",
     nome: "ChapGest 360",
     setor: "Funilaria e pintura automotiva · JC Chapeação, União do Oeste, SC",
@@ -127,6 +128,7 @@ export const projetos: Projeto[] = [
   },
   {
     id: "mecgest",
+    cor: "#3b82f6",
     numero: "07",
     nome: "MecGest 360",
     setor: "Oficina mecânica · Mecânica Piana",
