@@ -78,6 +78,30 @@ body {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
+/* Luzes do topo: duas manchas que derivam devagar (só transform, leve até em celular simples) */
+.luz {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(80px);
+  will-change: transform;
+  animation: deriva 18s ease-in-out infinite alternate;
+}
+@keyframes deriva {
+  from { transform: translate3d(0, 0, 0) scale(1); }
+  to { transform: translate3d(var(--dx, 6%), var(--dy, -8%), 0) scale(1.15); }
+}
+
+/* Parede de telas do topo: no celular fica menor, dentro de uma faixa */
+.parede-escala {
+  transform: scale(0.52);
+}
+@media (min-width: 640px) {
+  .parede-escala { transform: scale(0.7); }
+}
+@media (min-width: 1024px) {
+  .parede-escala { transform: none; }
+}
+
 details > summary { list-style: none; }
 details > summary::-webkit-details-marker { display: none; }
 
@@ -147,7 +171,8 @@ button {
 
 @media (prefers-reduced-motion: reduce) {
   .btn-shine::after,
-  .pulse-ring::before {
+  .pulse-ring::before,
+  .luz {
     animation: none;
   }
 }

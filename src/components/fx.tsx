@@ -1,6 +1,6 @@
 // Efeitos e animações reutilizáveis, pensados primeiro para o celular.
 import { Children, useEffect, useRef, useState, type ReactNode } from "react"
-import { m, useInView, useReducedMotion, useScroll, useSpring, useTransform } from "motion/react"
+import { m, useInView, useReducedMotion, useScroll, useSpring } from "motion/react"
 import { cn } from "@/lib/utils"
 import { SIZES_MOLDURA, srcsetDe } from "@/lib/imagens"
 
@@ -14,19 +14,6 @@ export function ScrollProgress() {
       style={{ scaleX }}
       className="fixed inset-x-0 top-0 z-[55] h-[2px] origin-left bg-gradient-to-r from-cyan-deep via-cyan to-white"
     />
-  )
-}
-
-/* Parallax leve: o conteúdo anda um pouco mais devagar que a rolagem */
-export function Parallax({ children, distancia = 30, className }: { children: ReactNode; distancia?: number; className?: string }) {
-  const ref = useRef<HTMLDivElement>(null)
-  const reduzir = useReducedMotion()
-  const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] })
-  const y = useTransform(scrollYProgress, [0, 1], [distancia, -distancia])
-  return (
-    <div ref={ref} className={className}>
-      <m.div style={reduzir ? undefined : { y }}>{children}</m.div>
-    </div>
   )
 }
 

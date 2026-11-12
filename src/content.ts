@@ -26,6 +26,8 @@ export type Projeto = {
   entregas: string[]
   capa: string
   numero: string
+  /** Cor de destaque do cartão do projeto (puxada da identidade do cliente) */
+  cor: string
   observacao?: string
   /** Sistemas: mostra cada tela separada no visualizador, em vez de uma página contínua */
   telasSeparadas?: boolean
@@ -34,6 +36,7 @@ export type Projeto = {
 export const projetos: Projeto[] = [
   {
     id: "ecocharge",
+    cor: "#3ddc84",
     numero: "01",
     nome: "Elbratec EcoCharge",
     setor: "Indústria · Carregadores para veículos elétricos",
@@ -46,6 +49,7 @@ export const projetos: Projeto[] = [
   },
   {
     id: "gimo",
+    cor: "#22c8e0",
     numero: "02",
     nome: "Gimo Eletropostos",
     setor: "Franquias · Mobilidade elétrica",
@@ -58,6 +62,7 @@ export const projetos: Projeto[] = [
   },
   {
     id: "elbratec",
+    cor: "#e9b872",
     numero: "03",
     nome: "Grupo Elbratec",
     setor: "Energia solar · Mobilidade elétrica",
@@ -70,6 +75,7 @@ export const projetos: Projeto[] = [
   },
   {
     id: "balen",
+    cor: "#ff8a3d",
     numero: "04",
     nome: "Barbearia Balen",
     setor: "Serviços locais · União do Oeste, SC",
@@ -82,6 +88,7 @@ export const projetos: Projeto[] = [
   },
   {
     id: "pontobom",
+    cor: "#ffd21f",
     numero: "05",
     nome: "PontoBom SmartStore",
     setor: "Assistência técnica",
