@@ -118,6 +118,30 @@ export const projetos: Projeto[] = [
     observacao: "Nomes, telefones, placas, chave PIX e valores foram ocultados nas imagens para proteger os dados do cliente.",
     telasSeparadas: true,
   },
+  {
+    id: "mecgest",
+    numero: "07",
+    nome: "MecGest 360",
+    setor: "Oficina mecânica · Mecânica Piana",
+    tipo: "Sistema de gestão com login",
+    objetivo:
+      "Organizar a oficina do recebimento do carro à entrega: orçamento pelo WhatsApp, serviço acompanhado por etapa e o cliente lembrado na hora de voltar.",
+    solucao:
+      "Um sistema em que o mecânico recebe o carro com placa, km e fotos, monta o orçamento e manda pelo WhatsApp com link e PDF. Cada serviço anda por etapas até a entrega, e a tela “Chamar de volta” avisa quais clientes devem retornar, por tempo ou por km. Financeiro, estoque e indicadores ficam no mesmo lugar, com login próprio para cada funcionário.",
+    entregas: [
+      "Recebimento com fotos",
+      "Orçamento pelo WhatsApp",
+      "Serviços por etapa",
+      "Chamar de volta",
+      "Financeiro e estoque",
+      "Indicadores",
+      "Login por funcionário",
+      "Modo claro e escuro",
+    ],
+    capa: "portfolio/81-mecgest-inicio.webp",
+    observacao: "Nomes, placas, telefones, e-mail e documentos foram trocados nas imagens para proteger os dados dos clientes.",
+    telasSeparadas: true,
+  },
 ]
 
 export const diferenciais = [
@@ -147,6 +171,7 @@ export const clientes: { nome: string; logo?: string }[] = [
   { nome: "PontoBom" },
   { nome: "Barbearia Balen" },
   { nome: "JC Chapeação" },
+  { nome: "Mecânica Piana" },
 ]
 
 /**
