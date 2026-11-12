@@ -112,4 +112,13 @@ export const shots: Record<string, { src: string; w: number; h: number }[]> = {
     { src: "portfolio/95-mecgest-funcionarios.webp", w: 1600, h: 900 },
     { src: "portfolio/96-mecgest-configuracoes.webp", w: 1600, h: 900 },
   ],
+  chiodi: [
+    { src: "portfolio/97-chiodi-completo.webp", w: 1348, h: 842 },
+    { src: "portfolio/98-chiodi-completo.webp", w: 1348, h: 921 },
+    { src: "portfolio/99-chiodi-completo.webp", w: 1348, h: 854 },
+    { src: "portfolio/100-chiodi-completo.webp", w: 1348, h: 728 },
+    { src: "portfolio/101-chiodi-completo.webp", w: 1348, h: 800 },
+    { src: "portfolio/102-chiodi-completo.webp", w: 1348, h: 588 },
+    { src: "portfolio/103-chiodi-completo.webp", w: 1348, h: 307 },
+  ],
 }

@@ -151,6 +151,19 @@ export const projetos: Projeto[] = [
     observacao: "Nomes, placas, telefones, e-mail e documentos foram trocados nas imagens para proteger os dados dos clientes.",
     telasSeparadas: true,
   },
+  {
+    id: "chiodi",
+    cor: "#a855f7",
+    numero: "08",
+    nome: "The Chiodi Barber",
+    setor: "Serviços locais · Coronel Freitas, SC",
+    tipo: "Landing page",
+    objetivo: "Mostrar que a barbearia fica aberta 24 horas e atende a domicílio, e levar o cliente direto para o WhatsApp.",
+    solucao:
+      "Uma página única com a cara da barbearia: relógio ao vivo avisando que está aberta, passo a passo do atendimento em casa, lista de serviços que já abre o WhatsApp com o pedido escrito, apresentação do barbeiro, fotos do espaço e mapa com rota.",
+    entregas: ["Aberto agora, ao vivo", "Atendimento a domicílio", "Serviços direto no WhatsApp", "Fotos do espaço", "Mapa e rota"],
+    capa: "portfolio/97-chiodi-completo.webp",
+  },
 ]
 
 export const diferenciais = [
@@ -181,6 +194,7 @@ export const clientes: { nome: string; logo?: string }[] = [
   { nome: "Barbearia Balen" },
   { nome: "JC Chapeação" },
   { nome: "Mecânica Piana" },
+  { nome: "The Chiodi Barber" },
 ]
 
 /**
