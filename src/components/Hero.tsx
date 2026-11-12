@@ -18,9 +18,9 @@ const numeros = [
 /* Telas que passam na parede do topo — três colunas, misturando os projetos.
    Usa a versão leve (-800) de cada print: cada tela aparece com ~260px de largura. */
 const COLUNAS = [
-  ["27-ecocharge-home", "pontobom-capa", "13-elbratec-completo", "24-balen-completo"],
-  ["01-gimo-completo", "20-balen-completo", "38-ecocharge-produtos", "65-pontobom-ordens-servico"],
-  ["11-elbratec-completo", "04-gimo-completo", "67-pontobom-vendas", "31-ecocharge-home"],
+  ["27-ecocharge-home", "mecgest-capa", "13-elbratec-completo", "24-balen-completo"],
+  ["01-gimo-completo", "20-balen-completo", "38-ecocharge-produtos", "chapgest-capa"],
+  ["11-elbratec-completo", "04-gimo-completo", "97-chiodi-completo", "31-ecocharge-home"],
 ]
 const DURACOES = [46, 58, 40]
 

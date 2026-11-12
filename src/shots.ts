@@ -71,16 +71,13 @@ export const shots: Record<string, { src: string; w: number; h: number }[]> = {
     { src: "portfolio/61-ecocharge-revendedor.webp", w: 1348, h: 555 },
     { src: "portfolio/62-ecocharge-revendedor.webp", w: 1348, h: 555 },
   ],
-  pontobom: [
-    { src: "portfolio/pontobom-capa.webp", w: 1672, h: 941 },
-    { src: "portfolio/64-pontobom-login.webp", w: 1363, h: 936 },
-    { src: "portfolio/65-pontobom-ordens-servico.webp", w: 1600, h: 900 },
-    { src: "portfolio/66-pontobom-orcamentos.webp", w: 1600, h: 900 },
-    { src: "portfolio/67-pontobom-vendas.webp", w: 1600, h: 900 },
-    { src: "portfolio/68-pontobom-contas-receber.webp", w: 1600, h: 900 },
-    { src: "portfolio/69-pontobom-clientes.webp", w: 1600, h: 900 },
-    { src: "portfolio/70-pontobom-estoque.webp", w: 1600, h: 900 },
-    { src: "portfolio/71-pontobom-atendente-ia.webp", w: 1600, h: 900 },
+  tecgest: [
+    { src: "portfolio/tecgest-capa.webp", w: 1672, h: 941 },
+    { src: "portfolio/104-tecgest-dashboard.webp", w: 1914, h: 905 },
+    { src: "portfolio/105-tecgest-ordens-servico.webp", w: 1919, h: 866 },
+    { src: "portfolio/106-tecgest-nova-os.webp", w: 1903, h: 908 },
+    { src: "portfolio/107-tecgest-orcamentos.webp", w: 1919, h: 864 },
+    { src: "portfolio/108-tecgest-contas-receber.webp", w: 1919, h: 864 },
   ],
   chapgest: [
     { src: "portfolio/chapgest-capa.webp", w: 1672, h: 941 },
