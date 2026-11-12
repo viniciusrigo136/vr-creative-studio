@@ -39,9 +39,8 @@ npm run build      # gera a pasta dist/ pronta para publicar
 | Marquee | Magic UI | Faixa de segmentos |
 | Border Beam | Magic UI | Pacote recomendado (só anima quando está na tela) |
 | Blur Fade | Magic UI | Entrada suave das seções (sem desfoque, por desempenho) |
-| Velaris | 21st.dev | Fundo animado do topo (WebGL, começa depois que a página carrega) |
 
-Ficam em `src/components/ui/`. Os efeitos próprios do site (barra de progresso, títulos que sobem, carrossel com bolinhas no celular, prévias que rolam sozinhas no portfólio) ficam em `src/components/fx.tsx`. O projeto já tem `components.json`, então o CLI do shadcn funciona aqui. Para trocar ou adicionar outro, no 21st.dev clique em
+Ficam em `src/components/ui/`. A parede de telas do topo fica em `src/components/Hero.tsx` (a lista de prints está em `COLUNAS`) e os cartões empilhados dos projetos em `src/components/Portfolio.tsx` (a cor de cada um é o campo `cor` em `src/content.ts`). Os efeitos próprios do site (barra de progresso, títulos que sobem, carrossel com bolinhas no celular, prévias que rolam sozinhas no portfólio) ficam em `src/components/fx.tsx`. O projeto já tem `components.json`, então o CLI do shadcn funciona aqui. Para trocar ou adicionar outro, no 21st.dev clique em
 “Copy” no comando `npx shadcn@latest add ...` e rode na pasta do projeto, ou copie o código para essa pasta.
 
 ## Publicar com domínio próprio (recomendado: Cloudflare Pages + Registro.br)
