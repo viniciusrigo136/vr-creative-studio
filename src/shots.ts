@@ -83,6 +83,7 @@ export const shots: Record<string, { src: string; w: number; h: number }[]> = {
     { src: "portfolio/71-pontobom-atendente-ia.webp", w: 1600, h: 900 },
   ],
   chapgest: [
+    { src: "portfolio/chapgest-capa.webp", w: 1672, h: 941 },
     { src: "portfolio/72-chapgest-inicio.webp", w: 1600, h: 763 },
     { src: "portfolio/73-chapgest-servico.webp", w: 1600, h: 767 },
     { src: "portfolio/74-chapgest-orcamento-cliente.webp", w: 1600, h: 738 },

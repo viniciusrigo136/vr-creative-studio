@@ -114,7 +114,7 @@ export const projetos: Projeto[] = [
       "Indicadores",
       "Modo claro e escuro",
     ],
-    capa: "portfolio/72-chapgest-inicio.webp",
+    capa: "portfolio/chapgest-capa.webp",
     observacao: "Nomes, telefones, placas, chave PIX e valores foram ocultados nas imagens para proteger os dados do cliente.",
     telasSeparadas: true,
   },
