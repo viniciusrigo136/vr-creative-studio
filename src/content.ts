@@ -94,6 +94,30 @@ export const projetos: Projeto[] = [
     observacao: "Nomes, contatos e valores foram ocultados nas imagens para proteger os dados do cliente.",
     telasSeparadas: true,
   },
+  {
+    id: "chapgest",
+    numero: "06",
+    nome: "ChapGest 360",
+    setor: "Funilaria e pintura automotiva · JC Chapeação, União do Oeste, SC",
+    tipo: "Sistema de gestão com login",
+    objetivo:
+      "Tirar a oficina do caderno e do WhatsApp solto: orçamento com fotos em minutos, pelo celular, e o cliente sabendo em que etapa está o carro sem precisar ligar.",
+    solucao:
+      "Um sistema feito primeiro para o celular. O chapeador monta o orçamento com fotos, manda pelo WhatsApp e o cliente aprova por um link. Aprovado, vira ordem de serviço com etapas, pagamentos, PDF em A4 e uma página onde o cliente acompanha o carro.",
+    entregas: [
+      "Orçamento com fotos",
+      "Aprovação pelo link",
+      "Ordens de serviço por etapa",
+      "Acompanhamento do cliente",
+      "Seguradora e franquia",
+      "PDF A4 e PIX",
+      "Indicadores",
+      "Modo claro e escuro",
+    ],
+    capa: "portfolio/72-chapgest-inicio.webp",
+    observacao: "Nomes, telefones, placas, chave PIX e valores foram ocultados nas imagens para proteger os dados do cliente.",
+    telasSeparadas: true,
+  },
 ]
 
 export const diferenciais = [
@@ -122,6 +146,7 @@ export const clientes: { nome: string; logo?: string }[] = [
   { nome: "Grupo Elbratec" },
   { nome: "PontoBom" },
   { nome: "Barbearia Balen" },
+  { nome: "JC Chapeação" },
 ]
 
 /**
