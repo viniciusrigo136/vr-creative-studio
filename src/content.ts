@@ -147,7 +147,7 @@ export const projetos: Projeto[] = [
       "Login por funcionário",
       "Modo claro e escuro",
     ],
-    capa: "portfolio/81-mecgest-inicio.webp",
+    capa: "portfolio/mecgest-capa.webp",
     observacao: "Nomes, placas, telefones, e-mail e documentos foram trocados nas imagens para proteger os dados dos clientes.",
     telasSeparadas: true,
   },

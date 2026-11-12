@@ -95,6 +95,7 @@ export const shots: Record<string, { src: string; w: number; h: number }[]> = {
     { src: "portfolio/80-chapgest-configuracoes.webp", w: 1600, h: 765 },
   ],
   mecgest: [
+    { src: "portfolio/mecgest-capa.webp", w: 1672, h: 941 },
     { src: "portfolio/81-mecgest-inicio.webp", w: 1600, h: 900 },
     { src: "portfolio/82-mecgest-servicos.webp", w: 1600, h: 900 },
     { src: "portfolio/83-mecgest-servico-detalhe.webp", w: 1600, h: 1819 },
